@@ -24,10 +24,10 @@ const wrapper = action => InnerComponent => {
       Object.keys(action).
         filter(actionName => actionName !== 'loadProps').
         forEach(actionName => {
-          this.actionWrap[actionName] = args =>
+          this.actionWrap[actionName] = (...args) =>
             Promise.resolve().
-              then(() => action[actionName](args)).
-              then(res => reload(actionName, args).then(() => res))
+              then(() => action[actionName](...args)).
+              then(res => reload(actionName, ...args).then(() => res))
         })
     }
 

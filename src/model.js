@@ -52,6 +52,9 @@ const routes = [{
 
 class HttpModel extends Model {
   constructor(routes) {
+    if (!routes || Array.isAarray(routes)) {
+      throw new Error('HttpModel should have routes(array) parameter')
+    }
     super({})
     this.route = {}
     routes.forEach(route => {
@@ -64,7 +67,11 @@ class HttpModel extends Model {
     Promise.all(paths.map(([path, query]) => {
       const symbol = JSON.stringify({ path, query })
       if (!super.has(symbol)) {
-        return this.route[path].get(query).then(value => super.set(symbol, value))
+        const getFunc = this.route[path] && this.route[path].get
+        if (!getFunc) {
+          throw new Error(`${path} get route is not found`)
+        }
+        return getFunc(query).then(value => super.set(symbol, value))
       }
       return Promise.resolve(super.get(symbol))
     })).then(results => {
@@ -76,7 +83,13 @@ class HttpModel extends Model {
   }
 
   call(...paths) {
-    Promise.all(paths.map(([path, query]) => this.route[path].call(query))).
+    Promise.all(paths.map(([path, query]) => {
+      const callFunc = this.route[path] && this.route[path].call
+      if (!callFunc) {
+        throw new Error(`${path} call route is not found`)
+      }
+      return callFunc(query)
+    })).
       then(results => {
         if (results.length === 1) {
           return results[0]
