@@ -1,0 +1,13 @@
+---
+  extends: airbnb
+
+  parser: babel-eslint
+
+  rules:
+    semi: [2, never]
+
+    # react
+    react/jsx-closing-bracket-location: [2, after-props]
+    react/jsx-first-prop-new-line: [2, never]
+    react/sort-comp: 0
+    react/prefer-stateless-function: 0
