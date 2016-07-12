@@ -23,12 +23,9 @@ class Model {
   }
 
   remove(path) {
-    if (this.has(path)) {
-      const value = this.get(path)
-      this.model = this.model.removeIn([].concat(path))
-      return value
-    }
-    return undefined
+    const value = this.get(path)
+    this.model = this.model.removeIn([].concat(path))
+    return value
   }
 
   has(path) {
