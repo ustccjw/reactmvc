@@ -57,7 +57,7 @@ class HttpModel extends Model {
       all(paths.map((...args) => {
         // path is string
         const [path, query] = args
-        const symbol = JSON.stringify({ path, query })
+        const symbol = JSON.stringify(args)
         if (!super.has(symbol)) {
           const getFunc = this.route[path] && this.route[path].get
           if (!getFunc) {
@@ -96,8 +96,7 @@ class HttpModel extends Model {
 
   remove(...paths) {
     paths.forEach((...args) => {
-      const [path, query] = args
-      const symbol = JSON.stringify({ path, query })
+      const symbol = JSON.stringify(args)
       super.remove(symbol)
     })
   }
