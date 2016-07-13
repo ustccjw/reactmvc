@@ -1,9 +1,8 @@
 import Immutable from 'immutable'
 
 class Model {
-  constructor(route, outputMode) {
+  constructor(route) {
     this.model = Immutable.fromJS(route)
-    this.outputMode = outputMode
   }
 
   get(path) {
@@ -26,10 +25,7 @@ class Model {
   }
 
   getAll() {
-    if (this.outputMode === 'js') {
-      return this.model.toJS()
-    }
-    return this.model
+    this.model.toJS()
   }
 }
 
