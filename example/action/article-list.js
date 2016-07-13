@@ -1,7 +1,7 @@
 import { uiModel, dataModel } from '../model'
 
 export async function loadProps() {
-  const { pageInfo } = uiModel.get('articleList')
+  const pageInfo = uiModel.get('articleList.pageInfo')
   const { pageNum, pageSize } = pageInfo
   const articles = await dataModel.get('articles')
   return {
@@ -12,6 +12,6 @@ export async function loadProps() {
 }
 
 export function changePageInfo(newPageInfo) {
-  const pageInfo = uiModel.get(['articleList', 'pageInfo'])
-  uiModel.set(['articleList', 'pageInfo'], { ...pageInfo, ...newPageInfo })
+  const pageInfo = uiModel.get('articleList.pageInfo')
+  uiModel.set('articleList.pageInfo', { ...pageInfo, ...newPageInfo })
 }

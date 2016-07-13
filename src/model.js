@@ -1,27 +1,35 @@
 import Immutable from 'immutable'
 
+/**
+ * path: 'xxx.xxx.xxx'
+ */
+
 class Model {
   constructor(route) {
     this.model = Immutable.fromJS(route)
   }
 
   get(path) {
-    return this.model.getIn([].concat(path)).toJS()
+    const pathArr = path.split('.')
+    return this.model.getIn(pathArr).toJS()
   }
 
   set(path, value) {
-    this.model = this.model.setIn([].concat(path), Immutable.fromJS(value))
+    const pathArr = path.split('.')
+    this.model = this.model.setIn(pathArr, Immutable.fromJS(value))
     return value
   }
 
   remove(path) {
     const value = this.get(path)
-    this.model = this.model.removeIn([].concat(path))
+    const pathArr = path.split('.')
+    this.model = this.model.removeIn(pathArr)
     return value
   }
 
   has(path) {
-    return this.model.hasIn([].concat(path))
+    const pathArr = path.split('.')
+    return this.model.hasIn(pathArr)
   }
 
   getAll() {
@@ -55,9 +63,8 @@ class HttpModel extends Model {
   get(...paths) {
     return Promise.
       all(paths.map((...args) => {
-        // path is string
         const [path, query] = args
-        const symbol = JSON.stringify(args)
+        const symbol = `${path}.${JSON.stringify(query)}`
         if (!super.has(symbol)) {
           const getFunc = this.route[path] && this.route[path].get
           if (!getFunc) {
@@ -96,7 +103,8 @@ class HttpModel extends Model {
 
   remove(...paths) {
     paths.forEach((...args) => {
-      const symbol = JSON.stringify(args)
+      const [path, query] = args
+      const symbol = `${path}.${JSON.stringify(query)}`
       super.remove(symbol)
     })
   }
