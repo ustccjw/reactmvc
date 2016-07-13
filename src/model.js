@@ -1,25 +1,18 @@
 import Immutable from 'immutable'
 
 class Model {
-  constructor(model) {
-    if (model instanceof Immutable) {
-      this.model = model
-    } else {
-      this.model = Immutable.fromJS(model)
-    }
+  constructor(route, outputMode) {
+    this.model = Immutable.fromJS(route)
+    this.outputMode = outputMode
   }
 
   get(path) {
-    return this.model.getIn([].concat(path))
+    return this.model.getIn([].concat(path)).toJS()
   }
 
   set(path, value) {
-    let immutableValue = value
-    if (!(value instanceof Immutable)) {
-      immutableValue = Immutable.fromJS(value)
-    }
-    this.model = this.model.setIn([].concat(path), immutableValue)
-    return immutableValue
+    this.model = this.model.setIn([].concat(path), Immutable.fromJS(value))
+    return value
   }
 
   remove(path) {
@@ -33,23 +26,26 @@ class Model {
   }
 
   getAll() {
+    if (this.outputMode === 'js') {
+      return this.model.toJS()
+    }
     return this.model
   }
 }
 
 /* route demo
 const routes = [{
-  path: ['market', 'list'],
+  path: 'market.list',
   get: query => fetch.get('/market/list').query(query).json()
 }, {
-  path: ['market', 'list'],
-  call: query => fetch.post('/market/list').send(query).json()
+  path: 'market.setBrand'
+  call: query => fetch.post('/market/setBrand').send(query).json()
 }];
 */
 
 class HttpModel extends Model {
   constructor(routes) {
-    if (!routes || Array.isAarray(routes)) {
+    if (!routes || !Array.isArray(routes)) {
       throw new Error('HttpModel should have routes(array) parameter')
     }
     super({})
@@ -61,32 +57,39 @@ class HttpModel extends Model {
   }
 
   get(...paths) {
-    Promise.all(paths.map(([path, query]) => {
-      const symbol = JSON.stringify({ path, query })
-      if (!super.has(symbol)) {
-        const getFunc = this.route[path] && this.route[path].get
-        if (!getFunc) {
-          throw new Error(`${path} get route is not found`)
+    return Promise.
+      all(paths.map((...args) => {
+        // path is string
+        const [path, query] = args
+        const symbol = JSON.stringify({ path, query })
+        if (!super.has(symbol)) {
+          const getFunc = this.route[path] && this.route[path].get
+          if (!getFunc) {
+            throw new Error(`${path} get route is not found`)
+          }
+          return getFunc(query).then(value => super.set(symbol, value))
         }
-        return getFunc(query).then(value => super.set(symbol, value))
-      }
-      return Promise.resolve(super.get(symbol))
-    })).then(results => {
-      if (results.length === 1) {
-        return results[0]
-      }
-      return results
-    })
+        return Promise.resolve(super.get(symbol))
+      })).
+      then(results => {
+        if (results.length === 1) {
+          return results[0]
+        }
+        return results
+      })
   }
 
   call(...paths) {
-    Promise.all(paths.map(([path, query]) => {
-      const callFunc = this.route[path] && this.route[path].call
-      if (!callFunc) {
-        throw new Error(`${path} call route is not found`)
-      }
-      return callFunc(query)
-    })).
+    return Promise.
+      all(paths.map((...args) => {
+        // path is string
+        const [path, query] = args
+        const callFunc = this.route[path] && this.route[path].call
+        if (!callFunc) {
+          throw new Error(`${path} call route is not found`)
+        }
+        return callFunc(query)
+      })).
       then(results => {
         if (results.length === 1) {
           return results[0]
@@ -96,7 +99,8 @@ class HttpModel extends Model {
   }
 
   remove(...paths) {
-    paths.forEach(([path, query]) => {
+    paths.forEach((...args) => {
+      const [path, query] = args
       const symbol = JSON.stringify({ path, query })
       super.remove(symbol)
     })

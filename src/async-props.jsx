@@ -34,7 +34,7 @@ function loadAsyncProps(components, params, location) {
       componentArray[index] = component
     })
   )
-  Promise.all(tasks).then(() => ({ componentArray, propsArray }))
+  return Promise.all(tasks).then(() => ({ componentArray, propsArray }))
 }
 
 function lookupPropsForComponent(component, propsAndComponents) {
@@ -49,7 +49,7 @@ function createElement(component, routerProps, asyncInfo) {
       <AsyncPropsContainer component={component} routerProps={routerProps} asyncInfo={asyncInfo} />
     )
   }
-  return <component {...routerProps} />
+  return React.createElement(component, routerProps)
 }
 
 class AsyncPropsContainer extends Component {
@@ -63,7 +63,8 @@ class AsyncPropsContainer extends Component {
     const { component, routerProps, asyncInfo } = this.props
     const { propsAndComponents, loading, reload } = asyncInfo
     const asyncProps = lookupPropsForComponent(component, propsAndComponents)
-    return <component {...routerProps} {...asyncProps} reload={reload} loading={loading} />
+    const props = { ...routerProps, ...asyncProps, reload, loading }
+    return React.createElement(component, props)
   }
 }
 
@@ -116,7 +117,7 @@ class AsyncProps extends Component {
   loadAsyncProps(components, params, location) {
     this.setState({ loading: true, prevProps: this.props })
     const { onError } = this.props
-    loadAsyncProps(components, params, location).
+    return loadAsyncProps(components, params, location).
       then(propsAndComponents => {
         const sameLocation = this.props.location === location
         if (sameLocation && !this.unmounted) {

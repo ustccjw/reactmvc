@@ -1,0 +1,31 @@
+{
+  "scripts": {
+    "start": "node server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "antd": "1",
+    "fetch.io": "3",
+    "react": "15",
+    "react-dom": "15",
+    "react-router": "2"
+  },
+  "devDependencies": {
+    "babel-loader": "6",
+    "babel-plugin-add-module-exports": "0.2",
+    "babel-plugin-antd": "0.4",
+    "babel-plugin-transform-decorators-legacy": "1",
+    "babel-polyfill": "6",
+    "css-loader": "0.23",
+    "express": "4",
+    "html-webpack-plugin": "2",
+    "postcss-cssnext": "2",
+    "postcss-loader": "0.9",
+    "postcss-nested": "1",
+    "redbox-react": "1",
+    "style-loader": "0.1",
+    "webpack": "1",
+    "webpack-dev-middleware": "1",
+    "webpack-hot-middleware": "2"
+  }
+}

@@ -1,16 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 
 const wrapper = action => InnerComponent => {
-  const { loadProps } = action
-  InnerComponent.loadProps = loadProps // eslint-disable-line no-param-reassign
-
   class OuterComponent extends Component {
     static propTypes = {
       reload: PropTypes.func.isRequired,
     }
 
     static childContextTypes = {
-      action: PropTypes.object,
+      action: PropTypes.object.isRequired,
     }
 
     getChildContext() {
@@ -21,7 +18,8 @@ const wrapper = action => InnerComponent => {
       super(props, context)
       const { reload } = props
       this.actionWrap = {}
-      Object.keys(action).
+      Object.
+        keys(action).
         filter(actionName => actionName !== 'loadProps').
         forEach(actionName => {
           this.actionWrap[actionName] = (...args) =>
@@ -35,6 +33,8 @@ const wrapper = action => InnerComponent => {
       return <InnerComponent {...this.props} reload={undefined} />
     }
   }
+  const { loadProps } = action
+  OuterComponent.loadProps = loadProps || (() => Promise.resolve({}))
   return OuterComponent
 }
 
