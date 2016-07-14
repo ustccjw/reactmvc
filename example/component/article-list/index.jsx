@@ -10,9 +10,6 @@ class ArticleList extends Component {
     totalSize: PropTypes.number.isRequired,
     pageInfo: PropTypes.object.isRequired,
     loading: PropTypes.bool.isRequired,
-  }
-
-  static contextTypes = {
     action: PropTypes.object.isRequired,
   }
 
@@ -41,7 +38,7 @@ class ArticleList extends Component {
   render() {
     const { articles, totalSize, pageInfo, loading } = this.props
     const { pageSize, pageNum } = pageInfo
-    const { changePageInfo } = this.context.action
+    const { changePageInfo } = this.props.action
     const columns = this.getColumns()
     const pagination = {
       current: pageNum,

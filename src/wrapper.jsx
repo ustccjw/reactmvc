@@ -6,14 +6,6 @@ const wrapper = action => InnerComponent => {
       reload: PropTypes.func.isRequired,
     }
 
-    static childContextTypes = {
-      action: PropTypes.object.isRequired,
-    }
-
-    getChildContext() {
-      return { action: this.actionWrap }
-    }
-
     constructor(props, context) {
       super(props, context)
       const { reload } = props
@@ -30,11 +22,11 @@ const wrapper = action => InnerComponent => {
     }
 
     render() {
-      return <InnerComponent {...this.props} reload={undefined} />
+      return <InnerComponent {...this.props} reload={undefined} action={this.actionWrap} />
     }
   }
   const { loadProps } = action
-  OuterComponent.loadProps = loadProps || (() => Promise.resolve({}))
+  OuterComponent.loadProps = loadProps
   return OuterComponent
 }
 
