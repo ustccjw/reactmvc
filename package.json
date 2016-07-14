@@ -1,6 +1,6 @@
 {
   "name": "reactmvc",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "M(immutable model)V(view component)C(react-router)",
   "main": "lib/index",
   "scripts": {

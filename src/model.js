@@ -32,7 +32,7 @@ class Model {
   }
 
   getAll() {
-    this.model.toJS()
+    return this.model.toJS()
   }
 
   clear() {
@@ -86,12 +86,9 @@ class HttpModel extends Model {
     return callFunc(query)
   }
 
-  remove(...paths) {
-    paths.forEach((...args) => {
-      const [path, query] = args
-      const symbol = `${path}.${JSON.stringify(query)}`
-      super.remove(symbol)
-    })
+  remove(path, query) {
+    const symbol = `${path}.${JSON.stringify(query)}`
+    return super.remove(symbol)
   }
 }
 
