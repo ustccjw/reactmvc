@@ -121,7 +121,7 @@ class AsyncProps extends Component {
       then(propsAndComponents => {
         const sameLocation = this.props.location === location
         if (sameLocation && !this.unmounted) {
-          this.setState({ loading: false, propsAndComponents })
+          this.setState({ loading: false, prevProps: null, propsAndComponents })
         }
       }).
       catch(err => {
@@ -145,7 +145,7 @@ class AsyncProps extends Component {
       return renderLoading()
     }
     const asyncInfo = { loading, propsAndComponents, reload: ::this.reload }
-    const props = loading ? prevProps : this.props
+    const props = prevProps || this.props
     return (
       <RouterContext {...props} createElement={(component, routerProps) =>
         createElement(component, routerProps, asyncInfo)} />

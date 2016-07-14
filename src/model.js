@@ -5,13 +5,20 @@ import Immutable from 'immutable'
  */
 
 class Model {
-  constructor(route) {
-    this.model = Immutable.fromJS(route)
+  constructor(routes) {
+    if (!routes || typeof routes !== 'object') {
+      throw new Error('Model should have routes(object) parameter')
+    }
+    this.model = Immutable.fromJS(routes)
   }
 
   get(path) {
     const pathArr = path.split('.')
-    return this.model.getIn(pathArr).toJS()
+    let value = this.model.getIn(pathArr)
+    if (value instanceof Immutable.Iterable) {
+      value = value.toJS()
+    }
+    return value
   }
 
   set(path, value) {
@@ -20,10 +27,8 @@ class Model {
   }
 
   remove(path) {
-    const value = this.get(path)
     const pathArr = path.split('.')
     this.model = this.model.removeIn(pathArr)
-    return value
   }
 
   has(path) {
@@ -36,7 +41,7 @@ class Model {
   }
 
   clear() {
-    this.model = Immutable.fromJS({})
+    this.model = this.model.clear()
   }
 }
 
@@ -88,7 +93,7 @@ class HttpModel extends Model {
 
   remove(path, query) {
     const symbol = `${path}.${JSON.stringify(query)}`
-    return super.remove(symbol)
+    super.remove(symbol)
   }
 }
 
