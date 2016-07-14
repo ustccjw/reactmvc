@@ -17,7 +17,6 @@ class Model {
   set(path, value) {
     const pathArr = path.split('.')
     this.model = this.model.setIn(pathArr, Immutable.fromJS(value))
-    return value
   }
 
   remove(path) {
@@ -34,6 +33,10 @@ class Model {
 
   getAll() {
     this.model.toJS()
+  }
+
+  clear() {
+    this.model = Immutable.fromJS({})
   }
 }
 
@@ -60,45 +63,27 @@ class HttpModel extends Model {
     })
   }
 
-  get(...paths) {
-    return Promise.
-      all(paths.map((...args) => {
-        const [path, query] = args
-        const symbol = `${path}.${JSON.stringify(query)}`
-        if (!super.has(symbol)) {
-          const getFunc = this.route[path] && this.route[path].get
-          if (!getFunc) {
-            throw new Error(`${path} get route is not found`)
-          }
-          return getFunc(query).then(value => super.set(symbol, value))
-        }
-        return Promise.resolve(super.get(symbol))
-      })).
-      then(results => {
-        if (results.length === 1) {
-          return results[0]
-        }
-        return results
+  get(path, query) {
+    const symbol = `${path}.${JSON.stringify(query)}`
+    if (!super.has(symbol)) {
+      const getFunc = this.route[path] && this.route[path].get
+      if (!getFunc) {
+        throw new Error(`${path} get route is not found`)
+      }
+      return getFunc(query).then(value => {
+        super.set(symbol, value)
+        return super.get(symbol)
       })
+    }
+    return Promise.resolve(super.get(symbol))
   }
 
-  call(...paths) {
-    return Promise.
-      all(paths.map((...args) => {
-        // path is string
-        const [path, query] = args
-        const callFunc = this.route[path] && this.route[path].call
-        if (!callFunc) {
-          throw new Error(`${path} call route is not found`)
-        }
-        return callFunc(query)
-      })).
-      then(results => {
-        if (results.length === 1) {
-          return results[0]
-        }
-        return results
-      })
+  call(path, query) {
+    const callFunc = this.route[path] && this.route[path].call
+    if (!callFunc) {
+      throw new Error(`${path} call route is not found`)
+    }
+    return callFunc(query)
   }
 
   remove(...paths) {

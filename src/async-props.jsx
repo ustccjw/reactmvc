@@ -29,7 +29,7 @@ function loadAsyncProps(components, params, location) {
   const componentArray = []
   const propsArray = []
   const tasks = findAsyncComponents(components).map((component, index) =>
-    component.loadProps(params, location).then(props => {
+    Promise.resolve().then(() => component.loadProps(params, location)).then(props => {
       propsArray[index] = props
       componentArray[index] = component
     })
