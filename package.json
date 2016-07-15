@@ -1,6 +1,6 @@
 {
   "name": "reactmvc",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "M(immutable model)V(view component)C(react-router)",
   "main": "lib/index",
   "scripts": {
@@ -26,10 +26,6 @@
     "url": "https://github.com/ustccjw/react-mvc/issues"
   },
   "homepage": "https://github.com/ustccjw/react-mvc#readme",
-  "peerDependencies": {
-    "react": "0.14 || 15",
-    "react-router": "2"
-  },
   "devDependencies": {
     "babel-cli": "6",
     "babel-core": "6",
@@ -46,7 +42,9 @@
     "rimraf": "2"
   },
   "dependencies": {
-    "immutable": "3"
+    "immutable": "3",
+    "react": "0.14 || 15",
+    "react-router": "2"
   },
   "pre-commit": [
     "lint"
