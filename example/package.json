@@ -23,7 +23,7 @@
     "postcss-loader": "0.9",
     "postcss-nested": "1",
     "redbox-react": "1",
-    "style-loader": "0.1",
+    "style-loader": "0.13",
     "webpack": "1",
     "webpack-dev-middleware": "1",
     "webpack-hot-middleware": "2"
