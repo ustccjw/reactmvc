@@ -1,5 +1,5 @@
 #app {
-  header {
+  & header {
     padding: 20px 0;
   }
   padding: 0 30px;

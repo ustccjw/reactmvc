@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node server",
+    "start": "NODE_ENV=development babel-node server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -11,6 +11,7 @@
     "react-router": "2"
   },
   "devDependencies": {
+    "babel-cli": "6",
     "babel-loader": "6",
     "babel-plugin-add-module-exports": "0.2",
     "babel-plugin-antd": "0.4",
@@ -21,7 +22,6 @@
     "html-webpack-plugin": "2",
     "postcss-cssnext": "2",
     "postcss-loader": "0.9",
-    "postcss-nested": "1",
     "redbox-react": "1",
     "style-loader": "0.13",
     "webpack": "1",

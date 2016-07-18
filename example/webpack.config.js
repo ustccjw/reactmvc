@@ -1,18 +1,19 @@
-const path = require('path')
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const postcssNested = require('postcss-nested')
-const postcssCssnext = require('postcss-cssnext')
+import path from 'path'
+import webpack from 'webpack'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import postCssnext from 'postcss-cssnext'
 
-module.exports = {
+const env = process.env.NODE_ENV
+
+const config = {
   entry: [
     'webpack-hot-middleware/client',
     'babel-polyfill',
     './index.jsx',
   ],
   output: {
-    path: path.join(__dirname, '../dev'),
-    filename: 'bundle.js',
+    path: path.join(__dirname, '../dist'),
+    filename: 'index.js',
     publicPath: '/',
   },
   resolve: {
@@ -26,22 +27,19 @@ module.exports = {
     }, {
       test: /\.css$/,
       loader: 'style?sourceMap!css?sourceMap!postcss?sourceMap',
-    }, {
-      test: /\.(png|jpg|jpeg)$/,
-      loader: 'url?limit=3072',
     }],
   },
   externals: {},
-  postcss: [postcssNested, postcssCssnext],
+  postcss: [postCssnext],
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.optimize.OccurenceOrderPlugin(),
     new HtmlWebpackPlugin({
       title: 'reactmvc example',
       filename: 'index.html',
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development'),
+      'process.env.NODE_ENV': JSON.stringify(env),
     }),
   ],
   devtool: 'inline-source-map',
@@ -49,3 +47,5 @@ module.exports = {
     root: path.join(__dirname, 'node_modules'),
   },
 }
+
+export default config

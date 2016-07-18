@@ -1,8 +1,8 @@
-const webpack = require('webpack')
-const Express = require('express')
-const webpackDevMiddleware = require('webpack-dev-middleware')
-const webpackHotMiddleware = require('webpack-hot-middleware')
-const config = require('./webpack.config')
+import webpack from 'webpack'
+import Express from 'express'
+import webpackDevMiddleware from 'webpack-dev-middleware'
+import webpackHotMiddleware from 'webpack-hot-middleware'
+import config from './webpack.config'
 
 const app = new Express()
 const port = 3000
