@@ -1,6 +1,6 @@
 {
   "name": "reactmvc",
-  "version": "1.0.9",
+  "version": "2.0.0",
   "description": "M(immutable model)V(view component)C(react-router)",
   "main": "lib/index",
   "scripts": {
@@ -42,7 +42,6 @@
     "rimraf": "2"
   },
   "dependencies": {
-    "immutable": "3",
     "react": "0.14 || 15",
     "react-router": "2"
   },
