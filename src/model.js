@@ -1,5 +1,3 @@
-import Immutable from 'immutable'
-
 /**
  * path: 'xxx.xxx.xxx'
  */
@@ -9,39 +7,74 @@ class Model {
     if (!routes || typeof routes !== 'object') {
       throw new Error('Model should have routes(object) parameter')
     }
-    this.model = Immutable.fromJS(routes)
+    this.model = routes
   }
 
   get(path) {
     const pathArr = path.split('.')
-    let value = this.model.getIn(pathArr)
-    if (value instanceof Immutable.Iterable) {
-      value = value.toJS()
+    let parent = this.model
+    pathArr.slice(0, -1).every(key => {
+      parent = parent[key]
+      if (typeof parent !== 'object') {
+        return false
+      }
+      return true
+    })
+    if (typeof parent !== 'object') {
+      return undefined
     }
-    return value
+    return JSON.parse(JSON.stringify(parent[pathArr[pathArr.length - 1]]))
   }
 
   set(path, value) {
     const pathArr = path.split('.')
-    this.model = this.model.setIn(pathArr, Immutable.fromJS(value))
+    let parent = this.model
+    pathArr.slice(0, -1).forEach(key => {
+      if (parent[key] === undefined) {
+        parent[key] = {}
+      }
+      parent = parent[key]
+    })
+    parent[pathArr[pathArr.length - 1]] = JSON.parse(JSON.stringify(value))
   }
 
   remove(path) {
     const pathArr = path.split('.')
-    this.model = this.model.removeIn(pathArr)
+    let parent = this.model
+    pathArr.slice(0, -1).every(key => {
+      parent = parent[key]
+      if (typeof parent !== 'object') {
+        return false
+      }
+      return true
+    })
+    if (typeof parent === 'object') {
+      parent[pathArr[pathArr.length - 1]] = undefined
+    }
   }
 
   has(path) {
     const pathArr = path.split('.')
-    return this.model.hasIn(pathArr)
+    let parent = this.model
+    pathArr.slice(0, -1).every(key => {
+      parent = parent[key]
+      if (typeof parent !== 'object') {
+        return false
+      }
+      return true
+    })
+    if (typeof parent !== 'object') {
+      return false
+    }
+    return parent[pathArr[pathArr.length - 1]] !== undefined
   }
 
   getAll() {
-    return this.model.toJS()
+    return JSON.parse(JSON.stringify(this.model))
   }
 
   clear() {
-    this.model = this.model.clear()
+    this.model = {}
   }
 }
 
