@@ -115,6 +115,7 @@ class AsyncProps extends Component {
   }
 
   loadAsyncProps(components, params, location) {
+    const routeChanged = location !== this.props.location
     this.setState({ loading: true, prevProps: this.props })
     const { onError } = this.props
     return loadAsyncProps(components, params, location).
@@ -126,7 +127,7 @@ class AsyncProps extends Component {
       }).
       catch(err => {
         this.setState({ loading: false })
-        onError(err)
+        onError(err, routeChanged)
       })
   }
 
