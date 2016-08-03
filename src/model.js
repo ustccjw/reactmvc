@@ -23,7 +23,8 @@ class Model {
     if (typeof parent !== 'object') {
       return undefined
     }
-    return JSON.parse(JSON.stringify(parent[pathArr[pathArr.length - 1]]))
+    const value = parent[pathArr[pathArr.length - 1]]
+    return typeof value !== 'object' ? value : JSON.parse(JSON.stringify(value))
   }
 
   set(path, value) {
@@ -35,7 +36,8 @@ class Model {
       }
       parent = parent[key]
     })
-    parent[pathArr[pathArr.length - 1]] = JSON.parse(JSON.stringify(value))
+    parent[pathArr[pathArr.length - 1]] =
+      typeof value !== 'object' ? value : JSON.parse(JSON.stringify(value))
   }
 
   remove(path) {
