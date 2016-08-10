@@ -103,7 +103,7 @@ class AsyncProps extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const routeChanged = nextProps.location !== this.props.location
+    const routeChanged = nextProps.location.key !== this.props.location.key
     if (routeChanged) {
       const { components, params, location } = nextProps
       this.loadAsyncProps(components, params, location)
@@ -115,12 +115,12 @@ class AsyncProps extends Component {
   }
 
   loadAsyncProps(components, params, location) {
-    const routeChanged = location !== this.props.location
+    const routeChanged = location.key !== this.props.location.key
     this.setState({ loading: true, prevProps: this.props })
     const { onError } = this.props
     return loadAsyncProps(components, params, location).
       then(propsAndComponents => {
-        const sameLocation = this.props.location === location
+        const sameLocation = this.props.location.key === location.key
         if (sameLocation && !this.unmounted) {
           this.setState({ loading: false, prevProps: null, propsAndComponents })
         }
