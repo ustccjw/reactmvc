@@ -61,9 +61,9 @@ class AsyncPropsContainer extends Component {
 
   render() {
     const { component, routerProps, asyncInfo } = this.props
-    const { propsAndComponents, loading, reload } = asyncInfo
+    const { propsAndComponents, loading, reload, routeChanged } = asyncInfo
     const asyncProps = lookupPropsForComponent(component, propsAndComponents)
-    const props = { ...routerProps, ...asyncProps, reload, loading }
+    const props = { ...routerProps, ...asyncProps, reload, loading, routeChanged }
     return React.createElement(component, props)
   }
 }
