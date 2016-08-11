@@ -75,6 +75,7 @@ class AsyncProps extends Component {
     location: React.PropTypes.object.isRequired,
     onError: React.PropTypes.func.isRequired,
     renderLoading: React.PropTypes.func.isRequired,
+    renderErrorPage: React.PropTypes.func.isRequired,
 
     // server rendering
     propsArray: React.PropTypes.array,
@@ -84,6 +85,7 @@ class AsyncProps extends Component {
   static defaultProps = {
     onError: err => { throw err },
     renderLoading: () => null,
+    renderErrorPage: () => null,
   }
 
   constructor(props, context) {
@@ -94,6 +96,8 @@ class AsyncProps extends Component {
       loading: false,
       prevProps: null,
       propsAndComponents: isServerRender ? { propsArray, componentArray } : null,
+      routeChanged: false,
+      routeChangeError: false,
     }
   }
 
@@ -116,18 +120,22 @@ class AsyncProps extends Component {
 
   loadAsyncProps(components, params, location) {
     const routeChanged = location.key !== this.props.location.key
-    this.setState({ loading: true, prevProps: this.props })
+    this.setState({ loading: true, prevProps: this.props, routeChanged })
     const { onError } = this.props
     return loadAsyncProps(components, params, location).
       then(propsAndComponents => {
         const sameLocation = this.props.location.key === location.key
         if (sameLocation && !this.unmounted) {
-          this.setState({ loading: false, prevProps: null, propsAndComponents })
+          this.setState({ loading: false, prevProps: null, propsAndComponents,
+            routeChangeError: false })
         }
       }).
       catch(err => {
-        this.setState({ loading: false })
-        onError(err, routeChanged)
+        const sameLocation = this.props.location.key === location.key
+        if (sameLocation && !this.unmounted) {
+          this.setState({ loading: false, routeChangeError: routeChanged })
+        }
+        onError(err)
       })
   }
 
@@ -140,12 +148,15 @@ class AsyncProps extends Component {
   }
 
   render() {
-    const { loading, prevProps, propsAndComponents } = this.state
-    const { renderLoading } = this.props
+    const { loading, prevProps, propsAndComponents, routeChanged, routeChangeError } = this.state
+    const { renderLoading, renderErrorPage } = this.props
     if (!propsAndComponents) {
       return renderLoading()
     }
-    const asyncInfo = { loading, propsAndComponents, reload: ::this.reload }
+    if (routeChangeError) {
+      return renderErrorPage()
+    }
+    const asyncInfo = { loading, routeChanged, propsAndComponents, reload: ::this.reload }
     const props = prevProps || this.props
     return (
       <RouterContext {...props} createElement={(component, routerProps) =>
