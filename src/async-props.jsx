@@ -132,8 +132,9 @@ class AsyncProps extends Component {
       }).
       catch(err => {
         const sameLocation = this.props.location.key === location.key
+        const { routeChangeError } = this.state
         if (sameLocation && !this.unmounted) {
-          this.setState({ loading: false, routeChangeError: routeChanged })
+          this.setState({ loading: false, routeChangeError: routeChangeError || routeChanged })
         }
         onError(err)
       })
