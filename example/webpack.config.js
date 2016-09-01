@@ -17,6 +17,7 @@ const config = {
     publicPath: '/',
   },
   resolve: {
+    root: path.join(__dirname, 'node_modules'),
     extensions: ['', '.jsx', '.js'],
   },
   module: {

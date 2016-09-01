@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react' // eslint-disable-line import/no-unresolved
 
 const wrapper = action => InnerComponent => {
   class OuterComponent extends Component {

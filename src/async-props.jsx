@@ -1,4 +1,4 @@
-/* eslint-disable react/no-multi-comp */
+/* eslint-disable react/no-multi-comp, import/no-unresolved */
 
 import React, { Component, PropTypes } from 'react'
 import RouterContext from 'react-router/lib/RouterContext'
