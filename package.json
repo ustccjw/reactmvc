@@ -1,6 +1,6 @@
 {
   "name": "reactmvc",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "M(immutable model)V(view component)C(react-router)",
   "keywords": [
     "async props",

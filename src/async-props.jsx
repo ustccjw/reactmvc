@@ -132,9 +132,12 @@ class AsyncProps extends Component {
       }).
       catch(err => {
         const sameLocation = this.props.location.key === location.key
-        const { routeChangeError } = this.state
+        const { routeChangeError, propsAndComponents } = this.state
         if (sameLocation && !this.unmounted) {
-          this.setState({ loading: false, routeChangeError: routeChangeError || routeChanged })
+          this.setState({
+            loading: false,
+            routeChangeError: routeChangeError || routeChanged || !propsAndComponents,
+          })
         }
         onError(err)
       })
@@ -151,11 +154,11 @@ class AsyncProps extends Component {
   render() {
     const { loading, prevProps, propsAndComponents, routeChanged, routeChangeError } = this.state
     const { renderLoading, renderErrorPage } = this.props
-    if (!propsAndComponents) {
-      return renderLoading()
-    }
     if (routeChangeError) {
       return renderErrorPage()
+    }
+    if (!propsAndComponents) {
+      return renderLoading()
     }
     const asyncInfo = { loading, routeChanged, propsAndComponents, reload: ::this.reload }
     const props = prevProps || this.props
